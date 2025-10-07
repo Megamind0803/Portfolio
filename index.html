@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Shridhar Gaikwad | Portfolio</title>
+  <style>
+    /* Reset */
+    * {margin:0; padding:0; box-sizing:border-box;}
+    body {
+      font-family: "Poppins", sans-serif;
+      background: black;
+      color: white;
+      overflow-x: hidden;
+    }
+
+    /* Canvas background for stars */
+    canvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: -1;
+    }
+
+    header {
+      text-align: center;
+      padding: 80px 20px 40px;
+    }
+    header h1 {
+      font-size: 3rem;
+      color: #00e6e6;
+    }
+    header p {
+      margin-top: 10px;
+      font-size: 1.2rem;
+      color: #ddd;
+    }
+
+    section {
+      padding: 60px 20px;
+      max-width: 1000px;
+      margin: auto;
+    }
+    section h2 {
+      font-size: 2rem;
+      color: #00e6e6;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .services {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+    .card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 12px;
+      padding: 20px;
+      transition: 0.3s;
+    }
+    .card:hover {
+      transform: translateY(-10px);
+      border-color: #00e6e6;
+      background: rgba(0,230,230,0.1);
+    }
+    .card h3 {
+      color: #fff;
+      margin-bottom: 10px;
+    }
+    .card p {
+      font-size: 0.9rem;
+      color: #ccc;
+    }
+
+    footer {
+      text-align: center;
+      padding: 40px 20px;
+      border-top: 1px solid rgba(255,255,255,0.2);
+      margin-top: 40px;
+      font-size: 0.9rem;
+      color: #aaa;
+    }
+    footer a {
+      color: #00e6e6;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="starfield"></canvas>
+
+  <header>
+    <h1>Shridhar Gaikwad</h1>
+    <p>Digital Marketing | Website Development | Branding</p>
+  </header>
+
+  <section>
+    <h2>About Me</h2>
+    <p style="text-align:center; max-width:800px; margin:auto;">
+      I specialize in helping businesses grow digitally through SEO, SMM, Google Ads, 
+      and creative website solutions. My goal is to deliver measurable results and impactful online presence.
+    </p>
+  </section>
+
+  <section>
+    <h2>Services</h2>
+    <div class="services">
+      <div class="card">
+        <h3>Website Development</h3>
+        <p>Static Websites, Dynamic Websites, and E-Commerce platforms with responsive design.</p>
+      </div>
+      <div class="card">
+        <h3>SEO & SMM</h3>
+        <p>Search Engine Optimization and Social Media Marketing to boost your visibility.</p>
+      </div>
+      <div class="card">
+        <h3>Google & Instagram Ads</h3>
+        <p>Targeted ad campaigns to maximize ROI and bring in qualified leads.</p>
+      </div>
+      <div class="card">
+        <h3>Branding & Growth</h3>
+        <p>Helping your brand stand out with unique strategies and consistent growth systems.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Contact</h2>
+    <p style="text-align:center; font-size:1.1rem;">
+      📧 Email: <a href="mailto:shridharg1995@outlook.com">shridharg1995@outlook.com</a><br/>
+      📞 Phone: <a href="tel:+917898841321">+91 7898841321</a>
+    </p>
+  </section>
+
+  <footer>
+    © 2025 Shridhar Gaikwad. All rights reserved.
+  </footer>
+
+  <script>
+    // Starfield effect
+    const canvas = document.getElementById("starfield");
+    const ctx = canvas.getContext("2d");
+    let stars = [];
+    let w, h;
+
+    function initStars() {
+      w = canvas.width = window.innerWidth;
+      h = canvas.height = window.innerHeight;
+      stars = [];
+      for (let i = 0; i < 200; i++) {
+        stars.push({
+          x: Math.random() * w,
+          y: Math.random() * h,
+          radius: Math.random() * 1.5,
+          dx: (Math.random() - 0.5) * 0.5,
+          dy: (Math.random() - 0.5) * 0.5
+        });
+      }
+    }
+
+    function drawStars() {
+      ctx.clearRect(0, 0, w, h);
+      ctx.fillStyle = "white";
+      for (let star of stars) {
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    function updateStars(mouseX, mouseY) {
+      for (let star of stars) {
+        star.x += star.dx + (mouseX - w/2) * 0.00005;
+        star.y += star.dy + (mouseY - h/2) * 0.00005;
+
+        if (star.x < 0) star.x = w;
+        if (star.x > w) star.x = 0;
+        if (star.y < 0) star.y = h;
+        if (star.y > h) star.y = 0;
+      }
+    }
+
+    let mouseX = w/2, mouseY = h/2;
+    window.addEventListener("mousemove", e => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+    });
+
+    function animate() {
+      drawStars();
+      updateStars(mouseX, mouseY);
+      requestAnimationFrame(animate);
+    }
+
+    window.addEventListener("resize", initStars);
+    initStars();
+    animate();
+  </script>
+</body>
+</html>
