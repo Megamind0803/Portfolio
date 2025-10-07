@@ -7,11 +7,10 @@
   <style>
     body {
       margin: 0;
-      padding: 0;
-      overflow-x: hidden;
       font-family: Arial, sans-serif;
       background: black;
       color: white;
+      text-align: center;
     }
     canvas {
       position: fixed;
@@ -19,29 +18,96 @@
       width: 100%; height: 100%;
       z-index: -1;
     }
-    header {
-      text-align: center;
+    section {
       padding: 80px 20px;
     }
-    header h1 {
-      font-size: 3rem;
+    h1, h2 {
       color: #00e6e6;
     }
-    header p {color: #ccc;}
+    .service {
+      background: rgba(255,255,255,0.05);
+      margin: 20px auto;
+      padding: 20px;
+      border-radius: 10px;
+      width: 80%;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .service:hover {
+      background: rgba(0,230,230,0.1);
+      transform: scale(1.05);
+    }
+    .details {
+      display: none;
+      margin-top: 10px;
+      font-size: 0.9rem;
+      color: #ccc;
+    }
+    footer {
+      background: #111;
+      padding: 20px;
+      color: #aaa;
+    }
+    a { color: #00e6e6; text-decoration: none; }
   </style>
 </head>
 <body>
   <canvas id="starfield"></canvas>
 
-  <header>
+  <!-- Hero -->
+  <section>
     <h1>Shridhar Gaikwad</h1>
     <p>Digital Marketing | Website Development | Branding</p>
-  </header>
+  </section>
+
+  <!-- About -->
+  <section>
+    <h2>About Me</h2>
+    <p>I help businesses grow digitally through effective marketing strategies and modern web solutions.</p>
+  </section>
+
+  <!-- Services -->
+  <section>
+    <h2>Services</h2>
+
+    <div class="service" onclick="toggleDetails(this)">
+      Website Development
+      <div class="details">Static | Dynamic | E-Commerce | Custom Web Apps</div>
+    </div>
+
+    <div class="service" onclick="toggleDetails(this)">
+      Digital Marketing
+      <div class="details">SEO | Google Ads | Instagram Ads | LinkedIn Growth</div>
+    </div>
+
+    <div class="service" onclick="toggleDetails(this)">
+      Branding & Strategy
+      <div class="details">Logo Design | Social Media Presence | Creative Campaigns</div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section>
+    <h2>Contact</h2>
+    <p>Email: <a href="mailto:shridharg1995@outlook.com">shridharg1995@outlook.com</a></p>
+    <p>Phone: <a href="tel:+917898841321">+91 7898841321</a></p>
+  </section>
+
+  <footer>
+    © 2025 Shridhar Gaikwad | All Rights Reserved
+  </footer>
 
   <script>
+    // Toggle Service Details
+    function toggleDetails(el) {
+      let d = el.querySelector(".details");
+      d.style.display = d.style.display === "block" ? "none" : "block";
+    }
+
+    // Star Background
     const canvas = document.getElementById("starfield");
     const ctx = canvas.getContext("2d");
-    let stars = [], w, h;
+    let stars = [], w, h, mx=0, my=0;
 
     function initStars() {
       w = canvas.width = window.innerWidth;
@@ -68,7 +134,7 @@
       }
     }
 
-    function updateStars(mx, my) {
+    function updateStars() {
       for (let s of stars) {
         s.x += s.dx + (mx - w/2) * 0.00005;
         s.y += s.dy + (my - h/2) * 0.00005;
@@ -79,12 +145,15 @@
       }
     }
 
-    let mx = w/2, my = h/2;
     window.addEventListener("mousemove", e => {mx = e.clientX; my = e.clientY;});
+    window.addEventListener("touchmove", e => {
+      mx = e.touches[0].clientX; 
+      my = e.touches[0].clientY;
+    });
 
     function animate() {
       drawStars();
-      updateStars(mx,my);
+      updateStars();
       requestAnimationFrame(animate);
     }
 
