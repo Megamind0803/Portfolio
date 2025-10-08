@@ -398,7 +398,6 @@
   }
   loop();
 })();
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -409,58 +408,47 @@
     body {
       margin: 0;
       height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
       background: black;
       overflow: hidden;
     }
-
     canvas {
-      position: absolute;
+      position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
+      display: block;
     }
-
     #space {
-      z-index: -2; /* सबसे पीछे background */
+      z-index: 0; /* background stars */
     }
-
     #trail {
-      z-index: -1; /* उसके ऊपर cursor trail */
+      z-index: 1; /* cyan cursor trail */
+      pointer-events: none;
     }
-
     h1 {
+      position: relative;
+      z-index: 2;
       color: cyan;
       font-size: 3em;
       font-family: Arial, sans-serif;
-      animation: glow 2s infinite alternate;
       text-align: center;
-      z-index: 1;
-      position: relative;
+      margin-top: 20%;
+      animation: glow 2s infinite alternate;
     }
-
     @keyframes glow {
-      from {
-        text-shadow: 0 0 5px cyan, 0 0 10px cyan, 0 0 15px cyan;
-      }
-      to {
-        text-shadow: 0 0 20px cyan, 0 0 30px cyan, 0 0 40px cyan;
-      }
+      from { text-shadow: 0 0 5px cyan, 0 0 10px cyan; }
+      to   { text-shadow: 0 0 20px cyan, 0 0 40px cyan; }
     }
   </style>
 </head>
 <body>
-  <!-- Background Stars -->
   <canvas id="space"></canvas>
-  <!-- Cursor Trail -->
   <canvas id="trail"></canvas>
-  <!-- Text -->
   <h1>Hi, I'm Shridhar Gaikwad</h1>
 
-    // SPACE BACKGROUND
+  <script>
+    // ==== STAR BACKGROUND ====
     const space = document.getElementById("space");
     const ctxSpace = space.getContext("2d");
 
@@ -474,62 +462,77 @@
     window.addEventListener("resize", resizeCanvas);
 
     const stars = [];
-    const numStars = 400;
+    const numStars = 300;
 
     for (let i = 0; i < numStars; i++) {
       stars.push({
         x: Math.random() * space.width,
         y: Math.random() * space.height,
-        radius: Math.random() * 1.5,
-        alpha: Math.random(),
-        speed: Math.random() * 0.02 + 0.005
+        r: Math.random() * 1.5,
+        dx: (Math.random() - 0.5) * 0.2,
+        dy: (Math.random() - 0.5) * 0.2
       });
     }
 
     function drawStars() {
       ctxSpace.clearRect(0, 0, space.width, space.height);
+      ctxSpace.fillStyle = "white";
       stars.forEach(star => {
         ctxSpace.beginPath();
-        ctxSpace.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
-        ctxSpace.closePath();
-        ctxSpace.fillStyle = `rgba(255, 255, 255, ${star.alpha})`;
+        ctxSpace.arc(star.x, star.y, star.r, 0, Math.PI * 2);
         ctxSpace.fill();
-
-        star.alpha += star.speed;
-        if (star.alpha <= 0 || star.alpha >= 1) {
-          star.speed = -star.speed;
-        }
+        // small random movement
+        star.x += star.dx;
+        star.y += star.dy;
+        if (star.x < 0 || star.x > space.width) star.dx *= -1;
+        if (star.y < 0 || star.y > space.height) star.dy *= -1;
       });
       requestAnimationFrame(drawStars);
     }
     drawStars();
 
-    // CURSOR TRAIL
+    // ==== CURSOR TRAIL ====
     const trail = document.getElementById("trail");
     const ctxTrail = trail.getContext("2d");
 
     let particles = [];
 
-    window.addEventListener("mousemove", e => {
-      particles.push({
-        x: e.clientX,
-        y: e.clientY,
-        alpha: 1
-      });
+    function addParticles(x, y) {
+      for (let i = 0; i < 3; i++) {
+        particles.push({
+          x: x,
+          y: y,
+          vx: (Math.random() - 0.5) * 1.5,
+          vy: (Math.random() - 0.5) * 1.5,
+          alpha: 1,
+          r: Math.random() * 2.5 + 1
+        });
+      }
+    }
+
+    // Mouse + Touch
+    window.addEventListener("mousemove", e => addParticles(e.clientX, e.clientY));
+    window.addEventListener("touchmove", e => {
+      const t = e.touches[0];
+      addParticles(t.clientX, t.clientY);
     });
 
     function drawTrail() {
       ctxTrail.clearRect(0, 0, trail.width, trail.height);
-
-      particles.forEach((p, i) => {
-        ctxTrail.beginPath();
-        ctxTrail.arc(p.x, p.y, 3, 0, Math.PI * 2);
-        ctxTrail.fillStyle = `rgba(0, 255, 255, ${p.alpha})`;
-        ctxTrail.fill();
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
         p.alpha -= 0.02;
-        if (p.alpha <= 0) particles.splice(i, 1);
-      });
-
+        if (p.alpha <= 0) {
+          particles.splice(i, 1);
+          continue;
+        }
+        ctxTrail.beginPath();
+        ctxTrail.fillStyle = `rgba(0,255,255,${p.alpha})`;
+        ctxTrail.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctxTrail.fill();
+      }
       requestAnimationFrame(drawTrail);
     }
     drawTrail();
