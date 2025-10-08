@@ -330,107 +330,7 @@
     /* ---------------------------
        Starfield + cursor/touch interaction
        --------------------------- */
-    (function(){
-      const canvas = document.getElementById('stars');
-      const ctx = canvas.getContext('2d');
-      let W, H, stars = [], count = 260;
-      let pointer = {x:window.innerWidth/2, y:window.innerHeight/2};
-
-      function onResize(){
-        W = canvas.width = window.innerWidth;
-        H = canvas.height = window.innerHeight;
-      }
-      window.addEventListener('resize', onResize);
-      onResize();
-
-      function init(){
-        stars = [];
-        for(let i=0;i<count;i++){
-          stars.push({
-            x: Math.random()*W,
-            y: Math.random()*H,
-            r: Math.random()*1.6 + 0.3,
-            vx: (Math.random()-0.5)*0.2,
-            vy: (Math.random()-0.5)*0.2,
-            alpha: Math.random()*0.9 + 0.1
-          });
-        }
-      }
-      init();
-
-      // pointer movement (mouse & touch)
-      window.addEventListener('mousemove', (e)=> { pointer.x = e.clientX; pointer.y = e.clientY; });
-      window.addEventListener('touchmove', (e)=> { if(e.touches && e.touches[0]){ pointer.x = e.touches[0].clientX; pointer.y = e.touches[0].clientY; } }, {passive:true});
-
-      function update(){
-        // subtle attraction to pointer
-        for(let s of stars){
-          // move
-          s.x += s.vx + (pointer.x - W/2)*0.00006;
-          s.y += s.vy + (pointer.y - H/2)*0.00006;
-
-          // twinkle (alpha change)
-          s.alpha += (Math.random()-0.5)*0.02;
-          if(s.alpha<0.1) s.alpha = 0.1;
-          if(s.alpha>1) s.alpha = 1;
-
-          // wrap
-          if(s.x < -10) s.x = W + 10;
-          if(s.x > W + 10) s.x = -10;
-          if(s.y < -10) s.y = H + 10;
-          if(s.y > H + 10) s.y = -10;
-        }
-      }
-
-      function draw(){
-        ctx.clearRect(0,0,W,H);
-
-        // gradient glow
-        const g = ctx.createLinearGradient(0,0,W,H);
-        g.addColorStop(0, 'rgba(96,165,250,0.06)');
-        g.addColorStop(1, 'rgba(110,231,183,0.03)');
-        ctx.fillStyle = g;
-        ctx.fillRect(0,0,W,H);
-
-        // draw stars & subtle connecting lines for nearby stars
-        for(let i=0;i<stars.length;i++){
-          const s = stars[i];
-          ctx.beginPath();
-          ctx.fillStyle = 'rgba(255,255,255,'+ (s.alpha*0.95) +')';
-          ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
-          ctx.fill();
-
-          // lines to nearby
-          for(let j=i+1;j<stars.length;j++){
-            const s2 = stars[j];
-            const dx = s.x - s2.x;
-            const dy = s.y - s2.y;
-            const dist = Math.sqrt(dx*dx + dy*dy);
-            if(dist < 120){
-              ctx.strokeStyle = 'rgba(96,165,250,'+ (0.06 - dist*0.0005) +')';
-              ctx.lineWidth = 0.6;
-              ctx.beginPath();
-              ctx.moveTo(s.x, s.y);
-              ctx.lineTo(s2.x, s2.y);
-              ctx.stroke();
-            }
-          }
-        }
-      }
-
-      function loop(){
-        update();
-        draw();
-        requestAnimationFrame(loop);
-      }
-      loop();
-    })();
-  </script>
-</body>
-</html>
-
-  <script>
-  <script>
+ <script>
 (function(){
   const trailCanvas = document.createElement('canvas');
   trailCanvas.style.position = 'fixed';
@@ -453,9 +353,8 @@
 
   let particles = [];
 
-  // Function to spawn particles
   function spawnParticles(x, y){
-    for(let i=0;i<3;i++){ // spawn 3 per move
+    for(let i=0;i<3;i++){
       particles.push({
         x:x,
         y:y,
@@ -467,31 +366,30 @@
     }
   }
 
-  // Mouse move for desktop
+  // Desktop mouse
   window.addEventListener('mousemove', e=>{
     spawnParticles(e.clientX, e.clientY);
   });
 
-  // Touch move for mobile
+  // Mobile touch
   window.addEventListener('touchmove', e=>{
-    e.preventDefault(); // prevent scrolling while drawing
     for(let i=0;i<e.touches.length;i++){
       const touch = e.touches[i];
       spawnParticles(touch.clientX, touch.clientY);
     }
-  }, {passive:false}); // passive:false needed for preventDefault
+  }, {passive:true});
 
   function loop(){
     ctx.clearRect(0,0,W,H);
     for(let i=particles.length-1;i>=0;i--){
       const p = particles[i];
-      p.x+=p.vx;
-      p.y+=p.vy;
-      p.alpha-=0.02;
-      if(p.alpha<=0){ particles.splice(i,1); continue; }
+      p.x += p.vx;
+      p.y += p.vy;
+      p.alpha -= 0.02;
+      if(p.alpha <= 0){ particles.splice(i,1); continue; }
       ctx.beginPath();
-      ctx.fillStyle = `rgba(0,255,255,${p.alpha})`; // cyan glow
-      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle = `rgba(0,255,255,${p.alpha})`; // cyan color
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
       ctx.fill();
     }
     requestAnimationFrame(loop);
