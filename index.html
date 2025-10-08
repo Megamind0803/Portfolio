@@ -1,239 +1,433 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Shridhar Gaikwad | Digital Marketing & Web Solutions</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Shridhar Gaikwad | Digital Marketing & Web Development</title>
+
+  <!-- Fonts & AOS (scroll animations) -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+
   <style>
-    /* Reset */
-    *{margin:0;padding:0;box-sizing:border-box;}
-    body {
-      font-family: Arial, sans-serif;
-      color: #fff;
-      background: black;
-      overflow-x: hidden;
-      scroll-behavior: smooth;
+    :root{
+      --bg:#05060a;
+      --card: rgba(255,255,255,0.04);
+      --accent1: #6ee7b7;
+      --accent2: #60a5fa;
+      --glass-border: rgba(255,255,255,0.06);
+      --muted: #9aa7b8;
     }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:'Poppins',system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;color:#e6eef8;background:var(--bg);scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+    /* Canvas background */
+    canvas#stars{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-2;display:block}
+    /* subtle gradient overlay */
+    .bg-overlay{position:fixed;inset:0;z-index:-1;background: radial-gradient(1200px 600px at 10% 20%, rgba(96,165,250,0.06), transparent 6%), radial-gradient(1000px 500px at 90% 80%, rgba(110,231,183,0.03), transparent 10%)}
 
-    /* Background */
-    canvas#stars, canvas#trail {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      z-index: -2;
+    /* NAV */
+    .nav{
+      position:sticky;top:0;backdrop-filter: blur(6px);background:linear-gradient(180deg, rgba(5,6,10,0.85), rgba(5,6,10,0.60));
+      border-bottom:1px solid rgba(255,255,255,0.03);z-index:100;
     }
+    .nav .wrap{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 20px;gap:12px}
+    .logo{font-weight:800;color:var(--accent1);letter-spacing:0.2px}
+    .menu{display:flex;gap:18px;align-items:center}
+    .menu a{color:#d9e9ff;text-decoration:none;font-weight:600;font-size:14px;padding:8px;border-radius:8px}
+    .menu a:hover{background:rgba(255,255,255,0.03)}
+    .cta-main{background:linear-gradient(90deg,var(--accent2),#7c3aed);padding:8px 14px;border-radius:10px;color:white;text-decoration:none;font-weight:700;font-size:14px}
 
-    /* Navbar */
-    nav {
-      position: sticky;
-      top: 0;
-      background: rgba(0,0,0,0.8);
-      display: flex;
-      justify-content: center;
-      padding: 15px;
-      z-index: 1000;
-    }
-    nav a {
-      margin: 0 15px;
-      color: cyan;
-      text-decoration: none;
-      font-weight: bold;
-      transition: color 0.3s;
-    }
-    nav a:hover { color: #fff; }
+    /* Hero */
+    .hero{min-height:85vh;display:flex;align-items:center;justify-content:center;padding:48px 20px}
+    .hero-inner{max-width:1100px;margin:auto;display:grid;grid-template-columns:1fr 420px;gap:40px;align-items:center}
+    .hero-left h1{font-size:48px;margin:0 0 10px;background:linear-gradient(90deg,var(--accent1),var(--accent2));-webkit-background-clip:text;color:transparent}
+    .hero-left p{color:var(--muted);font-size:18px;margin-bottom:18px}
+    .hero-actions{display:flex;gap:12px;align-items:center}
+    .btn{display:inline-block;padding:12px 18px;border-radius:12px;text-decoration:none;font-weight:700}
+    .btn-primary{background:linear-gradient(90deg,var(--accent2),#7c3aed);color:#fff;box-shadow:0 6px 24px rgba(96,165,250,0.08)}
+    .btn-outline{border:1px solid rgba(255,255,255,0.06);color:#dfeeff;background:transparent}
 
-    /* Sections */
-    section {
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      padding: 60px 20px;
-      text-align: center;
-    }
-    h1 { font-size: 3rem; color: cyan; margin-bottom: 10px; }
-    h2 { font-size: 2rem; margin-bottom: 20px; }
-    p { max-width: 600px; margin: 10px auto; line-height: 1.5; }
+    /* Hero card to right */
+    .hero-card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid var(--glass-border);padding:20px;border-radius:14px}
+    .hero-card h4{margin:0 0 8px;color:#fff}
+    .hero-card p{color:var(--muted);font-size:14px;margin:0}
+    .quick-list{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+    .quick-item{display:flex;gap:10px;align-items:center;color:var(--muted);font-size:14px}
+    .dot{width:10px;height:10px;background:linear-gradient(90deg,var(--accent1),var(--accent2));border-radius:99px;box-shadow:0 6px 16px rgba(96,165,250,0.08)}
 
-    /* Services */
-    .services {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 20px;
-      width: 100%;
-      max-width: 1000px;
-    }
-    .service {
-      background: rgba(255,255,255,0.05);
-      padding: 20px;
-      border-radius: 10px;
-      transition: transform 0.3s;
-    }
-    .service:hover { transform: scale(1.05); }
+    /* sections */
+    section{max-width:1100px;margin:0 auto;padding:60px 20px}
+    h2.section-title{font-size:26px;margin-bottom:14px;color:var(--accent2)}
+    p.lead{color:var(--muted);max-width:760px;margin:0 auto 18px}
 
-    /* Contact Form */
-    form {
-      display: flex;
-      flex-direction: column;
-      width: 100%;
-      max-width: 500px;
-      margin: auto;
-      text-align: left;
-    }
-    input, textarea {
-      margin: 10px 0;
-      padding: 12px;
-      border: none;
-      border-radius: 5px;
-      width: 100%;
-    }
-    button {
-      padding: 12px;
-      background: cyan;
-      color: black;
-      border: none;
-      border-radius: 5px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-    button:hover { background: white; }
+    /* Services grid */
+    .services-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px}
+    .service-card{background:var(--card);border:1px solid var(--glass-border);padding:18px;border-radius:12px;transition:transform .25s,box-shadow .25s}
+    .service-card:hover{transform:translateY(-8px);box-shadow:0 14px 40px rgba(2,6,23,0.6);border-color:rgba(96,165,250,0.18)}
+    .service-card h3{margin:0 0 8px;color:#fff;font-size:18px}
+    .service-card p{color:var(--muted);font-size:14px;margin:0 0 12px}
+    .service-list{color:var(--muted);font-size:13px;display:flex;flex-direction:column;gap:6px}
 
-    /* Footer */
-    footer {
-      background: rgba(0,0,0,0.9);
-      padding: 15px;
-      text-align: center;
-    }
+    /* Portfolio / Projects (placeholder) */
+    .projects{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
+    .proj{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
+    .proj h4{margin:6px 0;color:#fff}
+
+    /* Contact form */
+    .contact-wrap{display:grid;grid-template-columns:1fr 420px;gap:28px}
+    form.card-form{background:var(--card);padding:18px;border-radius:12px;border:1px solid var(--glass-border);display:flex;flex-direction:column;gap:10px}
+    input,textarea{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:12px;border-radius:8px;color:#eaf2ff;font-size:14px;outline:none}
+    input::placeholder,textarea::placeholder{color:rgba(230,238,255,0.4)}
+    .form-row{display:flex;gap:12px}
+    .note{font-size:13px;color:var(--muted)}
+    .success{padding:12px;border-radius:8px;background:linear-gradient(90deg,#10b98133,#60a5fa33);color:#dff8ee;border:1px solid rgba(96,165,250,0.12);display:none}
 
     /* WhatsApp CTA */
-    .whatsapp {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: #25D366;
-      color: white;
-      border-radius: 50%;
-      padding: 15px;
-      font-size: 24px;
-      text-decoration: none;
-      box-shadow: 0 0 10px rgba(0,0,0,0.5);
-      z-index: 1001;
-    }
+    .whatsapp-cta{position:fixed;right:18px;bottom:18px;background:linear-gradient(90deg,#25D366,#128C7E);color:white;padding:12px 14px;border-radius:999px;display:flex;align-items:center;gap:8px;box-shadow:0 10px 30px rgba(18,139,126,0.18);z-index:120}
+    .whatsapp-cta img{width:20px;height:20px}
 
-    /* Fade-in animation */
-    .fade {opacity:0;transform:translateY(20px);transition:all 0.6s;}
-    .fade.show {opacity:1;transform:translateY(0);}
+    /* Footer */
+    footer.sitefoot{padding:28px 20px;text-align:center;color:var(--muted);border-top:1px solid rgba(255,255,255,0.02)}
+
+    /* responsive */
+    @media (max-width:880px){
+      .hero-inner{grid-template-columns:1fr; padding-bottom:20px}
+      .contact-wrap{grid-template-columns:1fr}
+      .hero-left h1{font-size:34px}
+    }
   </style>
 </head>
 <body>
-  <!-- Background canvases -->
-  <canvas id="stars"></canvas>
-  <canvas id="trail"></canvas>
 
-  <!-- Navbar -->
-  <nav>
-    <a href="#home">Home</a>
-    <a href="#about">About</a>
-    <a href="#services">Services</a>
-    <a href="#contact">Contact</a>
+  <!-- Canvas + overlay -->
+  <canvas id="stars"></canvas>
+  <div class="bg-overlay" aria-hidden="true"></div>
+
+  <!-- NAV -->
+  <nav class="nav" role="navigation">
+    <div class="wrap">
+      <div class="logo">Shridhar Gaikwad</div>
+      <div class="menu" aria-label="Main menu">
+        <a href="#home">Home</a>
+        <a href="#about">About</a>
+        <a href="#services">Services</a>
+        <a href="#projects">Projects</a>
+        <a href="#contact">Contact</a>
+        <a class="cta-main" href="#contact">Get Started</a>
+      </div>
+    </div>
   </nav>
 
-  <!-- Hero -->
-  <section id="home">
-    <h1>Shridhar Gaikwad</h1>
-    <p>Digital Marketing | Website Development | Branding</p>
+  <!-- HERO -->
+  <header id="home" class="hero" role="banner">
+    <div class="hero-inner" data-aos="fade-up">
+      <div class="hero-left">
+        <h1>Hi, I'm <span style="color:transparent;background:linear-gradient(90deg,var(--accent1),var(--accent2));-webkit-background-clip:text">Shridhar Gaikwad</span></h1>
+        <p class="lead">I build websites & growth systems for businesses — from lead generating websites to performance marketing that scales.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#contact">Start a Project</a>
+          <a class="btn btn-outline" href="#services">See Services</a>
+        </div>
+      </div>
+
+      <aside class="hero-card" data-aos="fade-left">
+        <h4>Quick Overview</h4>
+        <p>Digital strategy, websites, SEO, ads and conversion funnels — technical handling and measurable growth.</p>
+
+        <div class="quick-list">
+          <div class="quick-item"><span class="dot"></span><span>Website & eCommerce</span></div>
+          <div class="quick-item"><span class="dot"></span><span>SEO & Local visibility</span></div>
+          <div class="quick-item"><span class="dot"></span><span>Ads, Funnels & WhatsApp automation</span></div>
+        </div>
+      </aside>
+    </div>
+  </header>
+
+  <!-- ABOUT -->
+  <section id="about" data-aos="fade-up">
+    <h2 class="section-title">About</h2>
+    <p class="lead">I help businesses increase leads and revenue using modern web experiences and data-driven marketing. My mission is to make professional digital growth affordable, measurable and repeatable for small and mid-sized companies.</p>
+    <p class="note" style="text-align:center">Typical clients: local manufacturers, food & FMCG brands, schools and small e-commerce stores.</p>
   </section>
 
-  <!-- About -->
-  <section id="about" class="fade">
-    <h2>About Me</h2>
-    <p>Based in <b>Mumbai</b>, I help businesses grow digitally with modern websites, smart marketing, and powerful branding. My mission is to provide simple, effective, and impactful solutions.</p>
-  </section>
+  <!-- SERVICES -->
+  <section id="services" data-aos="fade-up">
+    <h2 class="section-title">Services</h2>
+    <p class="lead">Complete technical and performance-first services — creative can be handled by your team or we can coordinate with creators.</p>
 
-  <!-- Services -->
-  <section id="services" class="fade">
-    <h2>Services</h2>
-    <div class="services">
-      <div class="service"><h3>Website Development</h3><p>Static, Dynamic, E-Commerce, Custom Web Apps.</p></div>
-      <div class="service"><h3>Digital Marketing</h3><p>SEO, Google Ads, Instagram Ads, LinkedIn Growth.</p></div>
-      <div class="service"><h3>Branding</h3><p>Logo Design, Social Media Strategy, Creative Campaigns.</p></div>
-      <div class="service"><h3>Content Strategy</h3><p>Engaging plans for websites and social platforms.</p></div>
-      <div class="service"><h3>Consulting</h3><p>1:1 digital growth consultations for businesses.</p></div>
+    <div class="services-grid" style="margin-top:20px">
+      <div class="service-card" data-aos="zoom-in">
+        <h3>Website Development</h3>
+        <p>Fast, SEO-friendly and conversion-focused websites.</p>
+        <div class="service-list">
+          <div>• Static Brochure Sites</div>
+          <div>• Dynamic CMS (WordPress / Headless)</div>
+          <div>• E-commerce & Payment Integration</div>
+          <div>• Landing pages & A/B testing</div>
+        </div>
+      </div>
+
+      <div class="service-card" data-aos="zoom-in" data-aos-delay="80">
+        <h3>Search Engine Optimization (SEO)</h3>
+        <p>Technical and content SEO to improve visibility & traffic.</p>
+        <div class="service-list">
+          <div>• Technical SEO & Site Audit</div>
+          <div>• Local SEO & Google My Business</div>
+          <div>• Keyword strategy & blog content planning</div>
+          <div>• Backlink & authority building</div>
+        </div>
+      </div>
+
+      <div class="service-card" data-aos="zoom-in" data-aos-delay="160">
+        <h3>Paid Advertising</h3>
+        <p>Performance-driven ad campaigns to generate leads & sales.</p>
+        <div class="service-list">
+          <div>• Google Search & Shopping</div>
+          <div>• Meta / Instagram Ads</div>
+          <div>• Campaign setup, tracking, optimization</div>
+          <div>• Reporting & ROAS focus</div>
+        </div>
+      </div>
+
+      <div class="service-card" data-aos="zoom-in" data-aos-delay="240">
+        <h3>WhatsApp Funnels & Automation</h3>
+        <p>Automated lead capture and nurture inside WhatsApp.</p>
+        <div class="service-list">
+          <div>• Auto-reply bots & templates</div>
+          <div>• Razorpay / payment integration</div>
+          <div>• Broadcast, segmented lists & coupons</div>
+          <div>• Conversion tracking</div>
+        </div>
+      </div>
+
+      <div class="service-card" data-aos="zoom-in" data-aos-delay="320">
+        <h3>Influencer & Social Strategy</h3>
+        <p>Performance + brand campaigns to grow awareness and sales.</p>
+        <div class="service-list">
+          <div>• Micro-influencer collabs</div>
+          <div>• Content calendar & repurposing</div>
+          <div>• Community-building & growth</div>
+        </div>
+      </div>
+
+      <div class="service-card" data-aos="zoom-in" data-aos-delay="400">
+        <h3>Analytics & Reporting</h3>
+        <p>Clear metrics and regular insight-driven strategy calls.</p>
+        <div class="service-list">
+          <div>• GTM & Analytics setup</div>
+          <div>• Conversion funnels & event tracking</div>
+          <div>• Monthly performance reports</div>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- Contact -->
-  <section id="contact" class="fade">
-    <h2>Contact Me</h2>
-    <form action="https://formspree.io/f/mjkvpklp" method="POST">
-      <input type="text" name="name" placeholder="Your Name" required>
-      <input type="email" name="_replyto" placeholder="Your Email" required>
-      <input type="tel" name="phone" placeholder="Your Phone">
-      <textarea name="message" rows="5" placeholder="Your Message" required></textarea>
-      <button type="submit">Send Message</button>
-    </form>
-    <p>Email: <a href="mailto:shridharg1995@outlook.com">shridharg1995@outlook.com</a></p>
-    <p>📞 <a href="tel:+917898841321">+91 7898841321</a></p>
+  <!-- Projects (placeholder, CLP-style) -->
+  <section id="projects" data-aos="fade-up">
+    <h2 class="section-title">Projects</h2>
+    <p class="lead">Selected work & case studies (placeholder). Share project details and we'll populate this section with real case studies and results.</p>
+
+    <div class="projects" style="margin-top:18px">
+      <div class="proj" data-aos="flip-left">
+        <h4>GSS Foods — Makhana Brand (Technical & Ads)</h4>
+        <p class="note">Website optimization, Google Ads & WhatsApp funnel (results: increased orders & tracked ROI).</p>
+      </div>
+      <div class="proj" data-aos="flip-left" data-aos-delay="80">
+        <h4>Local School — Admission Campaign</h4>
+        <p class="note">Social presence & local ads to increase admissions and parent enquiries.</p>
+      </div>
+      <div class="proj" data-aos="flip-left" data-aos-delay="160">
+        <h4>Demo E-commerce</h4>
+        <p class="note">E-commerce setup with payment integration and product feed optimization.</p>
+      </div>
+    </div>
   </section>
 
-  <!-- Footer -->
-  <footer>
-    <p>© 2025 Shridhar Gaikwad | All Rights Reserved</p>
+  <!-- CONTACT -->
+  <section id="contact" data-aos="fade-up">
+    <h2 class="section-title">Contact</h2>
+    <p class="lead">Ready to grow? Fill the form or reach me directly on WhatsApp or phone.</p>
+
+    <div class="contact-wrap" style="margin-top:18px">
+      <form id="contactForm" class="card-form" onsubmit="return handleSubmit(event)" novalidate>
+        <div style="display:flex;gap:10px;">
+          <input id="name" name="name" placeholder="Your name" required style="flex:1"/>
+          <input id="phone" name="phone" placeholder="Phone (optional)" pattern="^[0-9+ ]{7,20}$" />
+        </div>
+        <input id="email" name="email" placeholder="Email" type="email" required />
+        <input id="subject" name="subject" placeholder="Subject" />
+        <textarea id="message" name="message" placeholder="Message / project brief" rows="5" required></textarea>
+
+        <div style="display:flex;gap:10px;align-items:center;justify-content:space-between">
+          <div class="note">Or message on WhatsApp: <strong style="color:var(--accent1)">+91 7898841321</strong></div>
+          <div style="display:flex;gap:8px">
+            <button type="submit" class="btn btn-primary">Send Message</button>
+            <a class="btn btn-outline" href="mailto:shridharg1995@outlook.com">Email Me</a>
+          </div>
+        </div>
+
+        <div id="formSuccess" class="success" role="status">Message ready — (demo) showing success. I will contact you soon.</div>
+      </form>
+
+      <aside style="background:var(--card);padding:18px;border-radius:12px;border:1px solid var(--glass-border)">
+        <h3 style="margin-top:0">Contact Details</h3>
+        <p class="note">Phone: <a href="tel:+917898841321" style="color:var(--accent1)">+91 7898841321</a></p>
+        <p class="note">Email: <a href="mailto:shridharg1995@outlook.com" style="color:var(--accent2)">shridharg1995@outlook.com</a></p>
+        <p class="note">Location: Indore / MP (available remote)</p>
+        <div style="margin-top:14px">
+          <a class="cta-main" href="#contact">Let's talk</a>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <footer class="sitefoot">
+    © <span id="yr"></span> Shridhar Gaikwad. All rights reserved — Built with focus on results.
   </footer>
 
   <!-- WhatsApp CTA -->
-  <a href="https://wa.me/917898841321" class="whatsapp">💬</a>
+  <a class="whatsapp-cta" href="https://wa.me/917898841321?text=Hi%20Shridhar%2C%20I%27d%20like%20to%20discuss%20a%20project." target="_blank" rel="noopener">
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23fff'%3E%3Cpath d='M20.52 3.48a11.93 11.93 0 00-16.87 0 11.93 11.93 0 000 16.87L2 22l1.65-1.02A11.93 11.93 0 0020.52 3.48zM12 20a8 8 0 110-16 8 8 0 010 16z'/%3E%3Cpath d='M15.59 14.89l-.27-.02a6.92 6.92 0 01-2.8-.81 4.83 4.83 0 01-2.09-2.1 3.95 3.95 0 01-.3-1.9c.04-.33.27-.68.57-.88l.06-.04c.28-.18.6-.21.9-.08l.03.01c.3.13.6.2.9.2.21 0 .42-.04.61-.12.25-.1.48-.27.66-.49l.01-.01a1.08 1.08 0 01.79-.3c.36 0 .7.17.92.45.25.34.28.77.07 1.14-.03.07-.07.14-.12.2l-.04.06c-.17.28-.33.57-.44.87-.07.22-.07.46 0 .69.06.28.2.53.39.76.13.15.28.28.45.39.54.37 1.13.65 1.76.83.14.04.28.07.42.09.38.05.7.28.88.61.18.33.16.73-.06 1.04-.52.78-1.24 1.37-2.07 1.71a7.26 7.26 0 01-3.12.56l-.05-.01z'/%3E%3C/svg%3E" alt="whatsapp">
+    Message
+  </a>
 
-  <!-- Scroll animations -->
+  <!-- AOS script -->
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+
   <script>
-    const fades=document.querySelectorAll('.fade');
-    const observer=new IntersectionObserver(entries=>{
-      entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('show');}});
-    },{threshold:0.2});
-    fades.forEach(f=>observer.observe(f));
-  </script>
+    // init AOS
+    AOS.init({duration:700,once:true,easing:'ease-out-cubic'});
 
-  <!-- Background Stars -->
-  <script>
-    const canvas = document.getElementById('stars');
-    const ctx = canvas.getContext('2d');
-    let stars = [], w, h;
+    // dynamic year
+    document.getElementById('yr').innerText = new Date().getFullYear();
 
-    function resize(){
-      w = canvas.width = window.innerWidth;
-      h = canvas.height = window.innerHeight;
-      stars = [];
-      for(let i=0;i<150;i++){
-        stars.push({
-          x:Math.random()*w,
-          y:Math.random()*h,
-          r:Math.random()*1.5,
-          dx:(Math.random()-0.5)*0.5,
-          dy:(Math.random()-0.5)*0.5
-        });
+    /* ---------------------------
+       Simple contact form (demo)
+       --------------------------- */
+    function handleSubmit(e){
+      e.preventDefault();
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const message = document.getElementById('message').value.trim();
+      if(!name || !email || !message){
+        alert('Please fill Name, Email and Message.');
+        return false;
       }
-    }
-    window.addEventListener('resize',resize);
-    resize();
+      // basic email pattern
+      const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if(!re.test(email)){ alert('Enter a valid email'); return false; }
 
-    function drawStars(){
-      ctx.clearRect(0,0,w,h);
-      ctx.fillStyle = "white";
-      for(let s of stars){
-        ctx.beginPath();
-        ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
-        ctx.fill();
-        s.x+=s.dx;
-        s.y+=s.dy;
-        if(s.x<0||s.x>w) s.dx*=-1;
-        if(s.y<0||s.y>h) s.dy*=-1;
-      }
-      requestAnimationFrame(drawStars);
+      // show success (demo) — you can replace with fetch() to send server-side
+      const success = document.getElementById('formSuccess');
+      success.style.display = 'block';
+      setTimeout(()=> success.style.display = 'none',4000);
+
+      // reset form
+      e.target.reset();
+      return false;
     }
-    drawStars();
+
+    /* ---------------------------
+       Starfield + cursor/touch interaction
+       --------------------------- */
+    (function(){
+      const canvas = document.getElementById('stars');
+      const ctx = canvas.getContext('2d');
+      let W, H, stars = [], count = 260;
+      let pointer = {x:window.innerWidth/2, y:window.innerHeight/2};
+
+      function onResize(){
+        W = canvas.width = window.innerWidth;
+        H = canvas.height = window.innerHeight;
+      }
+      window.addEventListener('resize', onResize);
+      onResize();
+
+      function init(){
+        stars = [];
+        for(let i=0;i<count;i++){
+          stars.push({
+            x: Math.random()*W,
+            y: Math.random()*H,
+            r: Math.random()*1.6 + 0.3,
+            vx: (Math.random()-0.5)*0.2,
+            vy: (Math.random()-0.5)*0.2,
+            alpha: Math.random()*0.9 + 0.1
+          });
+        }
+      }
+      init();
+
+      // pointer movement (mouse & touch)
+      window.addEventListener('mousemove', (e)=> { pointer.x = e.clientX; pointer.y = e.clientY; });
+      window.addEventListener('touchmove', (e)=> { if(e.touches && e.touches[0]){ pointer.x = e.touches[0].clientX; pointer.y = e.touches[0].clientY; } }, {passive:true});
+
+      function update(){
+        // subtle attraction to pointer
+        for(let s of stars){
+          // move
+          s.x += s.vx + (pointer.x - W/2)*0.00006;
+          s.y += s.vy + (pointer.y - H/2)*0.00006;
+
+          // twinkle (alpha change)
+          s.alpha += (Math.random()-0.5)*0.02;
+          if(s.alpha<0.1) s.alpha = 0.1;
+          if(s.alpha>1) s.alpha = 1;
+
+          // wrap
+          if(s.x < -10) s.x = W + 10;
+          if(s.x > W + 10) s.x = -10;
+          if(s.y < -10) s.y = H + 10;
+          if(s.y > H + 10) s.y = -10;
+        }
+      }
+
+      function draw(){
+        ctx.clearRect(0,0,W,H);
+
+        // gradient glow
+        const g = ctx.createLinearGradient(0,0,W,H);
+        g.addColorStop(0, 'rgba(96,165,250,0.06)');
+        g.addColorStop(1, 'rgba(110,231,183,0.03)');
+        ctx.fillStyle = g;
+        ctx.fillRect(0,0,W,H);
+
+        // draw stars & subtle connecting lines for nearby stars
+        for(let i=0;i<stars.length;i++){
+          const s = stars[i];
+          ctx.beginPath();
+          ctx.fillStyle = 'rgba(255,255,255,'+ (s.alpha*0.95) +')';
+          ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+          ctx.fill();
+
+          // lines to nearby
+          for(let j=i+1;j<stars.length;j++){
+            const s2 = stars[j];
+            const dx = s.x - s2.x;
+            const dy = s.y - s2.y;
+            const dist = Math.sqrt(dx*dx + dy*dy);
+            if(dist < 120){
+              ctx.strokeStyle = 'rgba(96,165,250,'+ (0.06 - dist*0.0005) +')';
+              ctx.lineWidth = 0.6;
+              ctx.beginPath();
+              ctx.moveTo(s.x, s.y);
+              ctx.lineTo(s2.x, s2.y);
+              ctx.stroke();
+            }
+          }
+        }
+      }
+
+      function loop(){
+        update();
+        draw();
+        requestAnimationFrame(loop);
+      }
+      loop();
+    })();
   </script>
+</body>
+</html>
 
   <!-- Cursor Trail -->
   <script>
