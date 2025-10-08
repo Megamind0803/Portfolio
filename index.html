@@ -3,180 +3,248 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Shridhar Gaikwad | Portfolio</title>
+  <title>Shridhar Gaikwad | Digital Marketing & Web Solutions</title>
   <style>
-    * {margin:0;padding:0;box-sizing:border-box;}
+    /* Reset */
+    *{margin:0;padding:0;box-sizing:border-box;}
     body {
       font-family: Arial, sans-serif;
-      background: #000;
-      color: white;
-      scroll-behavior: smooth;
+      color: #fff;
+      background: black;
+      overflow-x: hidden;
     }
-    canvas#starfield {
+    canvas#stars, canvas#trail {
       position: fixed;
-      top:0; left:0;
-      width:100%; height:100%;
-      z-index:-1;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: -2;
     }
     nav {
       position: sticky;
-      top:0;
+      top: 0;
       background: rgba(0,0,0,0.8);
-      padding:15px;
-      display:flex;
-      justify-content:center;
-      gap:20px;
-      z-index:10;
+      display: flex;
+      justify-content: center;
+      padding: 15px;
+      z-index: 1000;
     }
     nav a {
-      color: #00e6e6;
+      margin: 0 15px;
+      color: cyan;
       text-decoration: none;
       font-weight: bold;
+      transition: color 0.3s;
     }
-    section {padding:80px 20px;text-align:center;}
-    h1,h2 {color:#00e6e6;}
-    .hero {
-      height:100vh;
-      display:flex;
-      flex-direction:column;
-      justify-content:center;
-      align-items:center;
+    nav a:hover { color: #fff; }
+
+    section {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      padding: 60px 20px;
+      text-align: center;
     }
-    .services {display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;}
-    .card {
-      background:rgba(255,255,255,0.05);
-      padding:20px;
-      border-radius:10px;
-      transition:transform 0.3s;
+    h1 { font-size: 3rem; color: cyan; margin-bottom: 10px; }
+    h2 { font-size: 2rem; margin-bottom: 20px; }
+    p { max-width: 600px; margin: 10px auto; line-height: 1.5; }
+
+    .services {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      width: 100%;
+      max-width: 1000px;
     }
-    .card:hover {transform:translateY(-5px);}
+    .service {
+      background: rgba(255,255,255,0.05);
+      padding: 20px;
+      border-radius: 10px;
+      transition: transform 0.3s;
+    }
+    .service:hover { transform: scale(1.05); }
+
     form {
-      max-width:500px;margin:0 auto;text-align:left;
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      max-width: 500px;
+      margin: auto;
     }
-    form input, form textarea {
-      width:100%;padding:10px;margin:10px 0;
-      border:none;border-radius:5px;
+    input, textarea {
+      margin: 10px 0;
+      padding: 12px;
+      border: none;
+      border-radius: 5px;
     }
-    form button {
-      padding:10px 20px;
-      background:#00e6e6;
-      border:none;
-      border-radius:5px;
-      cursor:pointer;
-      font-weight:bold;
+    button {
+      padding: 12px;
+      background: cyan;
+      color: black;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
     }
-    footer {background:#111;padding:20px;color:#aaa;text-align:center;}
+    button:hover { background: white; }
+
+    footer {
+      background: rgba(0,0,0,0.9);
+      padding: 15px;
+      text-align: center;
+    }
+
+    /* WhatsApp CTA */
     .whatsapp {
-      position:fixed;bottom:20px;right:20px;
-      background:#25D366;color:white;
-      padding:15px;border-radius:50%;
-      font-size:20px;text-decoration:none;
-      z-index:100;
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #25D366;
+      color: white;
+      border-radius: 50%;
+      padding: 15px;
+      font-size: 24px;
+      text-decoration: none;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+      z-index: 1001;
     }
-    /* simple scroll animations */
-    .fade {opacity:0;transform:translateY(20px);transition:all 0.6s;}
-    .fade.show {opacity:1;transform:translateY(0);}
   </style>
 </head>
 <body>
-  <canvas id="starfield"></canvas>
+  <!-- Background canvases -->
+  <canvas id="stars"></canvas>
+  <canvas id="trail"></canvas>
 
+  <!-- Navbar -->
   <nav>
-    <a href="#hero">Home</a>
+    <a href="#home">Home</a>
     <a href="#about">About</a>
     <a href="#services">Services</a>
     <a href="#contact">Contact</a>
   </nav>
 
-  <section id="hero" class="hero">
+  <!-- Hero -->
+  <section id="home">
     <h1>Shridhar Gaikwad</h1>
     <p>Digital Marketing | Website Development | Branding</p>
   </section>
 
-  <section id="about" class="fade">
+  <!-- About -->
+  <section id="about">
     <h2>About Me</h2>
-    <p>I help businesses in Mumbai grow digitally through smart marketing and powerful websites. My mission is to provide simple, effective, and impactful digital solutions.</p>
+    <p>Based in <b>Mumbai</b>, I am passionate about empowering businesses with smart digital strategies, modern websites, and strong brand identities. My mission is to help you grow online with measurable results.</p>
   </section>
 
-  <section id="services" class="fade">
+  <!-- Services -->
+  <section id="services">
     <h2>Services</h2>
     <div class="services">
-      <div class="card">
-        <h3>Website Development</h3>
-        <p>Static, Dynamic, E-Commerce, Custom Web Apps.</p>
-      </div>
-      <div class="card">
-        <h3>Digital Marketing</h3>
-        <p>SEO, Google Ads, Instagram Ads, LinkedIn Growth.</p>
-      </div>
-      <div class="card">
-        <h3>Branding</h3>
-        <p>Logo Design, Social Media Strategy, Creative Campaigns.</p>
-      </div>
+      <div class="service"><h3>Digital Marketing</h3><p>SEO, Google Ads, Social Media Campaigns tailored for your brand.</p></div>
+      <div class="service"><h3>Web Development</h3><p>Responsive, fast-loading websites and ecommerce solutions.</p></div>
+      <div class="service"><h3>Branding</h3><p>Logo design, identity creation, and impactful storytelling.</p></div>
+      <div class="service"><h3>Content Strategy</h3><p>Engaging content plans for social platforms and websites.</p></div>
+      <div class="service"><h3>Consulting</h3><p>1:1 digital growth consultation to scale your business.</p></div>
     </div>
   </section>
 
-  <section id="contact" class="fade">
+  <!-- Contact -->
+  <section id="contact">
     <h2>Contact Me</h2>
-    <form action="https://formspree.io/f/your_form_id" method="POST">
+    <form action="https://formspree.io/f/mjkvpklp" method="POST">
       <input type="text" name="name" placeholder="Your Name" required>
       <input type="email" name="_replyto" placeholder="Your Email" required>
+      <input type="tel" name="phone" placeholder="Your Phone">
       <textarea name="message" rows="5" placeholder="Your Message" required></textarea>
-      <button type="submit">Send</button>
+      <button type="submit">Send Message</button>
     </form>
-    <p>Or reach me directly:</p>
-    <p>Email: <a href="mailto:shridharg1995@outlook.com">shridharg1995@outlook.com</a></p>
-    <p>Phone: <a href="tel:+917898841321">+91 7898841321</a></p>
+    <p>📞 +91 7898841321</p>
   </section>
 
+  <!-- Footer -->
   <footer>
-    © 2025 Shridhar Gaikwad | All Rights Reserved
+    <p>© 2025 Shridhar Gaikwad | All Rights Reserved</p>
   </footer>
 
+  <!-- WhatsApp CTA -->
   <a href="https://wa.me/917898841321" class="whatsapp">💬</a>
 
+  <!-- Background Stars -->
   <script>
-    // Scroll animations
-    const fades=document.querySelectorAll('.fade');
-    const observer=new IntersectionObserver(entries=>{
-      entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('show');}});
-    },{threshold:0.2});
-    fades.forEach(f=>observer.observe(f));
+    const canvas = document.getElementById('stars');
+    const ctx = canvas.getContext('2d');
+    let stars = [];
+    let w, h;
 
-    // Starry background with mouse + touch
-    const canvas=document.getElementById("starfield");
-    const ctx=canvas.getContext("2d");
-    let stars=[],w,h,mx=0,my=0;
-    function init(){
-      w=canvas.width=window.innerWidth;
-      h=canvas.height=window.innerHeight;
-      stars=[];
+    function resize(){
+      w = canvas.width = window.innerWidth;
+      h = canvas.height = window.innerHeight;
+      stars = [];
       for(let i=0;i<150;i++){
         stars.push({x:Math.random()*w,y:Math.random()*h,r:Math.random()*1.5,dx:(Math.random()-0.5)*0.5,dy:(Math.random()-0.5)*0.5});
       }
     }
-    function draw(){
+    window.addEventListener('resize',resize);
+    resize();
+
+    function drawStars(){
       ctx.clearRect(0,0,w,h);
-      ctx.fillStyle="white";
-      stars.forEach(s=>{
+      ctx.fillStyle = "white";
+      for(let s of stars){
         ctx.beginPath();
         ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
         ctx.fill();
-      });
+        s.x+=s.dx;
+        s.y+=s.dy;
+        if(s.x<0||s.x>w) s.dx*=-1;
+        if(s.y<0||s.y>h) s.dy*=-1;
+      }
+      requestAnimationFrame(drawStars);
     }
-    function update(){
-      stars.forEach(s=>{
-        s.x+=s.dx+(mx-w/2)*0.00005;
-        s.y+=s.dy+(my-h/2)*0.00005;
-        if(s.x<0)s.x=w;if(s.x>w)s.x=0;
-        if(s.y<0)s.y=h;if(s.y>h)s.y=0;
-      });
+    drawStars();
+  </script>
+
+  <!-- Cursor Trail -->
+  <script>
+    const trailCanvas = document.getElementById('trail');
+    const tctx = trailCanvas.getContext('2d');
+    let TW, TH;
+    function resizeTrail(){
+      TW = trailCanvas.width = window.innerWidth;
+      TH = trailCanvas.height = window.innerHeight;
     }
-    function loop(){draw();update();requestAnimationFrame(loop);}
-    window.addEventListener("resize",init);
-    window.addEventListener("mousemove",e=>{mx=e.clientX;my=e.clientY;});
-    window.addEventListener("touchmove",e=>{mx=e.touches[0].clientX;my=e.touches[0].clientY;});
-    init();loop();
+    window.addEventListener('resize', resizeTrail);
+    resizeTrail();
+
+    let particles = [];
+    window.addEventListener('mousemove', e=>{
+      for(let i=0;i<3;i++){
+        particles.push({
+          x:e.clientX,
+          y:e.clientY,
+          vx:(Math.random()-0.5)*1.5,
+          vy:(Math.random()-0.5)*1.5,
+          alpha:1,
+          r:Math.random()*2.5+1
+        });
+      }
+    });
+
+    function loop(){
+      tctx.clearRect(0,0,TW,TH);
+      for(let i=particles.length-1;i>=0;i--){
+        const p = particles[i];
+        p.x+=p.vx; p.y+=p.vy; p.alpha-=0.02;
+        if(p.alpha<=0){particles.splice(i,1);continue;}
+        tctx.beginPath();
+        tctx.fillStyle=`rgba(0,255,255,${p.alpha})`; // cyan glow
+        tctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+        tctx.fill();
+      }
+      requestAnimationFrame(loop);
+    }
+    loop();
   </script>
 </body>
 </html>
