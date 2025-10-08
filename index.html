@@ -476,7 +476,7 @@
         p.alpha-=0.02;
         if(p.alpha<=0){ particles.splice(i,1); continue; }
         ctx.beginPath();
-        ctx.fillStyle = `rgba(255,255,255,${p.alpha})`;
+        ctx.fillStyle = `rgba(0,255,255,${p.alpha})`; // cyan glow
         ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
         ctx.fill();
       }
