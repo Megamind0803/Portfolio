@@ -399,3 +399,142 @@
   loop();
 })();
 </script>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Space + Cursor Trail</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: black;
+      overflow: hidden;
+    }
+
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    #space {
+      z-index: -2; /* सबसे पीछे background */
+    }
+
+    #trail {
+      z-index: -1; /* उसके ऊपर cursor trail */
+    }
+
+    h1 {
+      color: cyan;
+      font-size: 3em;
+      font-family: Arial, sans-serif;
+      animation: glow 2s infinite alternate;
+      text-align: center;
+      z-index: 1;
+      position: relative;
+    }
+
+    @keyframes glow {
+      from {
+        text-shadow: 0 0 5px cyan, 0 0 10px cyan, 0 0 15px cyan;
+      }
+      to {
+        text-shadow: 0 0 20px cyan, 0 0 30px cyan, 0 0 40px cyan;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Background Stars -->
+  <canvas id="space"></canvas>
+  <!-- Cursor Trail -->
+  <canvas id="trail"></canvas>
+  <!-- Text -->
+  <h1>Hi, I'm Shridhar Gaikwad</h1>
+
+  <script>
+    // SPACE BACKGROUND
+    const space = document.getElementById("space");
+    const ctxSpace = space.getContext("2d");
+
+    function resizeCanvas() {
+      space.width = window.innerWidth;
+      space.height = window.innerHeight;
+      trail.width = window.innerWidth;
+      trail.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener("resize", resizeCanvas);
+
+    const stars = [];
+    const numStars = 400;
+
+    for (let i = 0; i < numStars; i++) {
+      stars.push({
+        x: Math.random() * space.width,
+        y: Math.random() * space.height,
+        radius: Math.random() * 1.5,
+        alpha: Math.random(),
+        speed: Math.random() * 0.02 + 0.005
+      });
+    }
+
+    function drawStars() {
+      ctxSpace.clearRect(0, 0, space.width, space.height);
+      stars.forEach(star => {
+        ctxSpace.beginPath();
+        ctxSpace.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+        ctxSpace.closePath();
+        ctxSpace.fillStyle = `rgba(255, 255, 255, ${star.alpha})`;
+        ctxSpace.fill();
+
+        star.alpha += star.speed;
+        if (star.alpha <= 0 || star.alpha >= 1) {
+          star.speed = -star.speed;
+        }
+      });
+      requestAnimationFrame(drawStars);
+    }
+    drawStars();
+
+    // CURSOR TRAIL
+    const trail = document.getElementById("trail");
+    const ctxTrail = trail.getContext("2d");
+
+    let particles = [];
+
+    window.addEventListener("mousemove", e => {
+      particles.push({
+        x: e.clientX,
+        y: e.clientY,
+        alpha: 1
+      });
+    });
+
+    function drawTrail() {
+      ctxTrail.clearRect(0, 0, trail.width, trail.height);
+
+      particles.forEach((p, i) => {
+        ctxTrail.beginPath();
+        ctxTrail.arc(p.x, p.y, 3, 0, Math.PI * 2);
+        ctxTrail.fillStyle = `rgba(0, 255, 255, ${p.alpha})`;
+        ctxTrail.fill();
+        p.alpha -= 0.02;
+        if (p.alpha <= 0) particles.splice(i, 1);
+      });
+
+      requestAnimationFrame(drawTrail);
+    }
+    drawTrail();
+  </script>
+</body>
+</html>
