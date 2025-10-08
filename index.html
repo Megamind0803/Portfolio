@@ -330,6 +330,7 @@
     /* ---------------------------
        Starfield + cursor/touch interaction
        --------------------------- */
+<script>
 (function(){
   const trailCanvas = document.createElement('canvas');
   trailCanvas.style.position = 'fixed';
@@ -351,7 +352,6 @@
   resize();
 
   let particles = [];
-  let hearts = [];
 
   function spawnParticles(x, y){
     for(let i=0;i<3;i++){
@@ -366,44 +366,16 @@
     }
   }
 
-  function spawnHeart(x, y){
-    hearts.push({
-      x:x,
-      y:y,
-      alpha:1,
-      size: Math.random()*20+20
-    });
-  }
-
-  let lastPos = null;
-  const heartDistThreshold = 50; // only spawn heart on fast/far movement
-
-  function handleMove(x, y){
-    spawnParticles(x, y);
-
-    if(lastPos){
-      const dx = x - lastPos.x;
-      const dy = y - lastPos.y;
-      const dist = Math.sqrt(dx*dx + dy*dy);
-
-      // Only spawn heart if fast/far movement
-      if(dist > heartDistThreshold){
-        spawnHeart(x, y);
-      }
-    }
-    lastPos = {x, y};
-  }
-
   // Mouse
   window.addEventListener('mousemove', e=>{
-    handleMove(e.clientX, e.clientY);
+    spawnParticles(e.clientX, e.clientY);
   });
 
   // Touch
   window.addEventListener('touchmove', e=>{
     for(let i=0;i<e.touches.length;i++){
       const touch = e.touches[i];
-      handleMove(touch.clientX, touch.clientY);
+      spawnParticles(touch.clientX, touch.clientY);
     }
   }, {passive:true});
 
@@ -418,20 +390,9 @@
       p.alpha -= 0.02;
       if(p.alpha <= 0){ particles.splice(i,1); continue; }
       ctx.beginPath();
-      ctx.fillStyle = `rgba(0,255,255,${p.alpha})`;
+      ctx.fillStyle = `rgba(0,255,255,${p.alpha})`; // cyan
       ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
       ctx.fill();
-    }
-
-    // Draw hearts
-    for(let i=hearts.length-1;i>=0;i--){
-      const h = hearts[i];
-      h.y -= 1; // float up
-      h.alpha -= 0.02;
-      if(h.alpha <= 0){ hearts.splice(i,1); continue; }
-      ctx.fillStyle = `rgba(255,0,0,${h.alpha})`;
-      ctx.font = `${h.size}px Arial`;
-      ctx.fillText('❤️', h.x - h.size/2, h.y);
     }
 
     requestAnimationFrame(loop);
